@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.4.22 <0.9.0;
 
 
 contract Pool {
 
     enum State {initialized, ongoing, completed}
     
-    constant uint256 startRaisingFrom = 12345678765 - 1 days;
-    constant uint256 raiseBy = 12345678765;
+    uint256 constant startRaisingFrom = 12345678765 - 1 days;
+    uint256 constant raiseBy = 12345678765;
     State currentState;
     uint poolValue;
     address owner;
@@ -48,7 +48,7 @@ contract Pool {
     function recieveToPool () public payable {
         uint amountRecieved = msg.value;
         if(sponsorFunds[msg.sender] == 0){
-            sponsorFunds[msg.sender] = amountRecieved
+            sponsorFunds[msg.sender] = amountRecieved;
         }else {
             sponsorFunds[msg.sender] = sponsorFunds[msg.sender] + amountRecieved;
         }
