@@ -36,7 +36,8 @@ contract Pool {
     //to constant raiseBy and startRaisingFrom to meet isState modifier requirements. Currently only
     //the owner can change the phase but chainlink keeper can be implemented later to automate the 
     //change state process.
-    function changeState(uint state) isOwner {
+    //TODO check the access specifier
+    function changeState(uint state) public isOwner {
         if(state == 1){
             require(block.timestamp > startRaisingFrom, "ongoing phase cannot be started");
         } else if(state ==2){
@@ -52,14 +53,14 @@ contract Pool {
         }else {
             sponsorFunds[msg.sender] = sponsorFunds[msg.sender] + amountRecieved;
         }
-        //poolValue redundatn as same can be achievedd by this.balance
+        //poolValue redundatn as same can be achieved by this.balance
         poolValue += amountRecieved;
     }
     
     //function to pay the project owner his match by multiplying the amtch ratio with the total poolValue
-    function payoutPoolMatch(uint match, address projectOwner) public payable isOwner {
-        projectOwner.transfer(match.mul(poolValue));
-    }
+    // function payoutPoolMatch(uint match, address projectOwner) public payable isOwner {
+    //     projectOwner.transfer(match.mul(poolValue));
+    // }
  
  
 }

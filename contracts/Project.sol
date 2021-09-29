@@ -12,8 +12,8 @@ contract Project {
 
     address owner;                                                                  //to store owner, here = the actual Project owner
     uint256 projectID;                                                              //unused variable, may find a use later
-    constant uint256 startRaisingFrom = 12345678765 - 1 days;
-    constant uint256 raiseBy = 12345678765;
+    uint256 constant startRaisingFrom = 12345678765 - 1 days;
+    uint256 constant raiseBy = 12345678765;
     State currentState;
     uint256 public currentBal;
     mapping(address => uint) public funds;
@@ -57,9 +57,9 @@ contract Project {
         if(p == 0)
             return 1;
         if(p % 2 == 1) {
-            return u_pow(x, p-1)*x;
+            return pow(x, p-1)*x;
         } else {
-            return u_pow(x, p / 2)*u_pow(x, p / 2);
+            return pow(x, p / 2)*pow(x, p / 2);
         }
     }
     
@@ -67,7 +67,7 @@ contract Project {
     //to constant raiseBy and startRaisingFrom to meet isState modifier requirements. Currently only
     //the owner can change the phase but chainlink keeper can be implemented later to automate the 
     //change state process.
-    function changeState(uint state) isOwner {
+    function changeState(uint state) public isOwner {
         if(state == 1){
             require(block.timestamp > startRaisingFrom, "ongoing phase cannot be started");
         } else if(state ==2){
@@ -88,10 +88,10 @@ contract Project {
     //is required to reference and check if a address has already contributed some amount to prevent
     //user from breaking his contribution into small amounts to cheat quadratic funding. 
     function contribute() public payable isState(State.ongoing) {
-        uint amountRecieved = msg.value
+        uint amountRecieved = msg.value;
         if(funds[msg.sender] == 0){
-            uniqueContributors.push(msg.sender)
-            funds[msg.sender] = amountRecieved
+            uniqueContributors.push(msg.sender);
+            funds[msg.sender] = amountRecieved;
         }else {
             funds[msg.sender] = funds[msg.sender] + amountRecieved;
         }
@@ -101,10 +101,11 @@ contract Project {
     }
     
     //function to payout the funds collected in this project contract to the projectOwner
-    function payout() isOwner payable isState(State.completed) {
-        uint amount = this.balance;
-        projectOwner.transfer(amount);
-    }
+    //TODO check with the access specifier
+    // function payout() isOwner public payable isState(State.completed) {
+    //     uint amount = this.balance;
+    //     projectOwner.transfer(amount);
+    // }
     
     
     
